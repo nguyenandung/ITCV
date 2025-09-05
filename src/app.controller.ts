@@ -14,14 +14,15 @@ export class AppController {
     private authService: AuthService,
   ) {}
 
-  // @UseGuards(LocalAuthGuard)
+  @Public()
   @Post('/login')
+  @UseGuards(LocalAuthGuard)
   handleLogin(@Request() req) {
+    console.log(req.user);
     return this.authService.login(req.user);
   }
 
-  // @Public()
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
