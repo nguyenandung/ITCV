@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
-import { UserRequest } from 'src/auth/decorator/customize';
+import { RessponseMessage, UserRequest } from 'src/auth/decorator/customize';
 import { IUser } from 'src/users/user.interface';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 // import { UpdateCompanyDto } from './dto/update-company.dto';
@@ -28,6 +28,7 @@ export class CompaniesController {
   }
 
   @Get()
+  @RessponseMessage("Company's list")
   findAll(
     @Query('page') currentPage: string,
     @Query('limit') limit: string,
