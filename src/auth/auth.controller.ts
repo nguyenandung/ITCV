@@ -8,10 +8,11 @@ import {
   Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Public, RessponseMessage } from './decorator/customize';
+import { Public, RessponseMessage, UserRequest } from './decorator/customize';
 import { LocalAuthGuard } from './local-auth.guard';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { Request, Response } from 'express';
+import { IUser } from 'src/users/user.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -30,5 +31,19 @@ export class AuthController {
   @Post('/register')
   handleRegister(@Body() registerUserDto: RegisterUserDto) {
     return this.authService.register(registerUserDto);
+  }
+
+  @RessponseMessage('Get user information')
+  @Get('/account')
+  handleGetAccount(@UserRequest() user: IUser) {
+    return { user };
+  }
+
+  @Public()
+  @RessponseMessage('Refresh token')
+  @Get('/refresh')
+  handleRefreshToken(@Req() request: Request) {
+    const refreshToken = request.cookies['refresh_token'];
+    return this.authService.processNewToken(refreshToken);
   }
 }
