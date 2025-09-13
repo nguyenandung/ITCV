@@ -11,7 +11,7 @@ import { AuthService } from './auth.service';
 import { Public, RessponseMessage, UserRequest } from './decorator/customize';
 import { LocalAuthGuard } from './local-auth.guard';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
-import { Request, Response } from 'express';
+import { Request, response, Response } from 'express';
 import { IUser } from 'src/users/user.interface';
 
 @Controller('auth')
@@ -42,8 +42,11 @@ export class AuthController {
   @Public()
   @RessponseMessage('Refresh token')
   @Get('/refresh')
-  handleRefreshToken(@Req() request: Request) {
+  handleRefreshToken(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
     const refreshToken = request.cookies['refresh_token'];
-    return this.authService.processNewToken(refreshToken);
+    return this.authService.processNewToken(refreshToken, response);
   }
 }
