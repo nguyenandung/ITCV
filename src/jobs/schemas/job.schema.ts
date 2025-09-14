@@ -14,6 +14,7 @@ export class Job extends Document {
   company: {
     _id: mongoose.Schema.Types.ObjectId;
     name: string;
+    logo: string;
   };
 
   @Prop()

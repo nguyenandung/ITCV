@@ -32,6 +32,9 @@ class Company {
 
   @IsNotEmpty()
   name: string;
+
+  @IsNotEmpty()
+  logo: string;
 }
 
 export class CreateJobDto {
@@ -48,6 +51,9 @@ export class CreateJobDto {
   @ValidateNested()
   @Type(() => Company)
   company: Company;
+
+  @IsNotEmpty({ message: 'Location khong duoc de trong' })
+  location: string;
 
   @IsNotEmpty({ message: 'Salary khong duoc de trong' })
   salary: number;

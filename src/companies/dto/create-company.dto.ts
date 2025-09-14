@@ -9,4 +9,7 @@ export class CreateCompanyDto {
 
   @IsNotEmpty({ message: 'Address không được phep trống' })
   address: string;
+
+  @IsNotEmpty({ message: 'Logo khong duoc de trong' })
+  logo: string;
 }
