@@ -76,6 +76,7 @@ export class UsersService {
     delete filter.current;
     delete filter.pageSize;
 
+    filter.deleted = { $ne: true };
     let offset = (+currentPage - 1) * +limit;
     let defaultLimit = +limit ? +limit : 10;
 
@@ -110,6 +111,7 @@ export class UsersService {
     return this.userModel
       .findOne({
         _id: id,
+        deletedAt: { $exists: true },
       })
       .select('-password');
   }
