@@ -10,7 +10,11 @@ import {
 } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
-import { RessponseMessage, UserRequest } from 'src/auth/decorator/customize';
+import {
+  Public,
+  RessponseMessage,
+  UserRequest,
+} from 'src/auth/decorator/customize';
 import { IUser } from 'src/users/user.interface';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 // import { UpdateCompanyDto } from './dto/update-company.dto';
@@ -38,8 +42,9 @@ export class CompaniesController {
   }
 
   @Get(':id')
+  @Public()
   findOne(@Param('id') id: string) {
-    return this.companiesService.findOne(+id);
+    return this.companiesService.findOne(id);
   }
 
   @Patch(':id')
