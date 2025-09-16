@@ -1,9 +1,15 @@
 import { Module } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { RolesController } from './roles.controller';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Resume, ResumeSchema } from 'src/resumes/schemas/resume.schema';
+import { Role, RoleSchema } from './schemas/role.schema';
 
 @Module({
+  imports: [
+    MongooseModule.forFeature([{ name: Role.name, schema: RoleSchema }]),
+  ],
   controllers: [RolesController],
-  providers: [RolesService]
+  providers: [RolesService],
 })
 export class RolesModule {}

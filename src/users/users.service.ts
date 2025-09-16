@@ -113,13 +113,16 @@ export class UsersService {
         _id: id,
         deletedAt: { $exists: true },
       })
-      .select('-password');
+      .select('-password')
+      .populate({ path: 'role', select: { name: 1, _id: 1 } });
   }
 
   findOneByUsername(username: string) {
-    return this.userModel.findOne({
-      email: username,
-    });
+    return this.userModel
+      .findOne({
+        email: username,
+      })
+      .populate({ path: 'role', select: { name: 1, _id: 1 } });
   }
 
   isValidPassword(password: string, hash: string) {
@@ -144,6 +147,10 @@ export class UsersService {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return 'Not found user';
     }
+
+    const foundUser = await this.userModel.findById(id);
+    if (foundUser.email === 'admin@gmail.com')
+      throw new BadRequestException('Không được xóa tài khoản admin');
 
     await this.userModel.updateOne(
       {
