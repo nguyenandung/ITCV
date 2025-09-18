@@ -9,10 +9,15 @@ import { User, UserDocument } from './schemas/user.schema';
 import { UserRequest } from 'src/auth/decorator/customize';
 import { IUser } from './user.interface';
 import aqp from 'api-query-params';
+import { Role, RoleDocument } from 'src/roles/schemas/role.schema';
+import { USER_ROLE } from 'src/databases/sample';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: SoftDeleteModel<UserDocument>,
+
+    @InjectModel(Role.name)
+    private roleModel: SoftDeleteModel<RoleDocument>,
   ) {}
 
   getHashPassword = (password: string) => {
@@ -58,6 +63,7 @@ export class UsersService {
       throw new BadRequestException(` email ${email} đã tồn tại`);
     }
     const hashPassword = this.getHashPassword(password);
+    const userRole = await this.roleModel.findOne({ name: USER_ROLE });
     let newUser = await this.userModel.create({
       name,
       email,
@@ -65,7 +71,7 @@ export class UsersService {
       age,
       gender,
       address,
-      role: 'USER',
+      role: userRole._id,
     });
 
     return newUser;
@@ -122,7 +128,7 @@ export class UsersService {
       .findOne({
         email: username,
       })
-      .populate({ path: 'role', select: { name: 1, _id: 1 } });
+      .populate({ path: 'role', select: { name: 1 } });
   }
 
   isValidPassword(password: string, hash: string) {
@@ -174,6 +180,9 @@ export class UsersService {
   };
 
   findUserByToken = async (refreshToken: string) => {
-    return await this.userModel.findOne({ refreshToken });
+    return (await this.userModel.findOne({ refreshToken })).populate({
+      path: 'role',
+      select: { name: 1 },
+    });
   };
 }
